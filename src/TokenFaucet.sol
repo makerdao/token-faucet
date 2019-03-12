@@ -31,7 +31,7 @@ contract TokenFaucet {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function setMak(uint256 max_) external auth {
+    function setMax(uint256 max_) external auth {
         max = max_;
     }
 }
