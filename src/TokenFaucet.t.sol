@@ -8,7 +8,8 @@ contract TokenFaucetTest is DSTest {
     TokenFaucet faucet;
 
     function setUp() public {
-        faucet = new TokenFaucet();
+        uint256 max = 10 ** 18;
+        faucet = new TokenFaucet(max);
     }
 
     function testFail_basic_sanity() public {
