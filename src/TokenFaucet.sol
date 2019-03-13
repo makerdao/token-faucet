@@ -22,6 +22,7 @@ contract TokenFaucet {
 
     function gulp(ERC20Like gem) external {
         uint256 bal = max;
+        require(!done[msg.sender][address(gem)], "token-faucet: already used faucet");
         require(gem.balanceOf(address(this)) >= bal, "token-faucet: not enough balance");
         done[msg.sender][address(gem)] = true;
         gem.transfer(msg.sender, bal);
