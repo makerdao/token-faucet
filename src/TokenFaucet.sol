@@ -12,27 +12,40 @@ contract TokenFaucet {
     function deny(address guy) public auth { wards[guy] = 0; }
     modifier auth { require(wards[msg.sender] == 1); _; }
 
-    uint256 public max;
+    uint256 public amt;
     mapping (address => mapping (address => bool)) public done;
 
-    constructor (uint256 max_) public {
+    constructor (uint256 amt_) public {
         wards[msg.sender] = 1;
-        max = max_;
+        amt = amt_;
     }
 
-    function gulp(ERC20Like gem) external {
-        uint256 bal = max;
+    function mul(uint x, uint y) internal pure returns (uint z) {
+        require(y == 0 || (z = x * y) / y == x);
+    }
+
+    function gulp(address gem) external {
         require(!done[msg.sender][address(gem)], "token-faucet: already used faucet");
-        require(gem.balanceOf(address(this)) >= bal, "token-faucet: not enough balance");
+        require(ERC20Like(gem).balanceOf(address(this)) >= amt, "token-faucet: not enough balance");
         done[msg.sender][address(gem)] = true;
-        gem.transfer(msg.sender, bal);
+        ERC20Like(gem).transfer(msg.sender, amt);
+    }
+
+    function gulp(address gem, address payable [] calldata addrs) external {
+        require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt, addrs.length), "token-faucet: not enough balance");
+
+        for (uint i = 0; i < addrs.length; i++) {
+            require(!done[addrs[i]][address(gem)], "token-faucet: already used faucet");
+            done[addrs[i]][address(gem)] = true;
+            ERC20Like(gem).transfer(addrs[i], amt);
+        }
     }
 
     function shut(ERC20Like gem) external auth {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function setMax(uint256 max_) external auth {
-        max = max_;
+    function setamt(uint256 amt_) external auth {
+        amt = amt_;
     }
 }
