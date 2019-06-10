@@ -5,7 +5,7 @@ interface ERC20Like {
     function transfer(address,uint256) external; // return bool?
 }
 
-contract TokenFaucet {
+contract RestrictedTokenFaucet {
     // --- Auth ---
     mapping (address => uint) public wards;
     function rely(address guy) public auth { wards[guy] = 1; }
@@ -31,7 +31,7 @@ contract TokenFaucet {
         ERC20Like(gem).transfer(msg.sender, amt);
     }
 
-    function gulp(address gem, address payable [] calldata addrs) external {
+    function gulp(address gem, address payable[] calldata addrs) external {
         require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt, addrs.length), "token-faucet: not enough balance");
 
         for (uint i = 0; i < addrs.length; i++) {
