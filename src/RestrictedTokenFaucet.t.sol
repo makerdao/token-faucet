@@ -18,10 +18,6 @@ contract FaucetUser {
         faucet.gulp(address(token));
     }
 
-    function doBalanceOf() public view returns(uint) {
-        return token.balanceOf(address(this));
-    }
-
     function doUndo(address usr) public {
         faucet.undo(usr, address(token));
     }
@@ -73,9 +69,9 @@ contract RestrictedTokenFaucetTest is DSTest {
     function test_gulp_auth() public {
         faucet.rely(user1);
         assertEq(faucet.wards(user1), 1);
-        assertEq(FaucetUser(user1).doBalanceOf(), 0);
+        assertEq(token.balanceOf(user1), 0);
         FaucetUser(user1).doGulp();
-        assertEq(FaucetUser(user1).doBalanceOf(), 20 ether);
+        assertEq(token.balanceOf(user1), 20 ether);
     }
 
     function testFail_rely_notOwner() public {
