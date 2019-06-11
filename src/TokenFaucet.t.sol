@@ -10,15 +10,15 @@ contract TokenFaucetTest is DSTest {
     DSToken token;
 
     function setUp() public {
-        faucet = new TokenFaucet(20 ether);
+        faucet = new TokenFaucet(20);
         token = new DSToken("TEST");
-        token.mint(address(faucet), 1000000 ether);
+        token.mint(address(faucet), 1000000);
     }
 
     function test_gulp() public {
         assertEq(token.balanceOf(address(this)), 0);
         faucet.gulp(address(token));
-        assertEq(token.balanceOf(address(this)), 20 ether);
+        assertEq(token.balanceOf(address(this)), 20);
     }
 
     function test_gulp_multiple() public {
@@ -32,10 +32,10 @@ contract TokenFaucetTest is DSTest {
         addrs[2] = address(567);
         addrs[3] = address(890);
         faucet.gulp(address(token), addrs);
-        assertEq(token.balanceOf(address(123)), 20 ether);
-        assertEq(token.balanceOf(address(234)), 20 ether);
-        assertEq(token.balanceOf(address(567)), 20 ether);
-        assertEq(token.balanceOf(address(890)), 20 ether);
+        assertEq(token.balanceOf(address(123)), 20);
+        assertEq(token.balanceOf(address(234)), 20);
+        assertEq(token.balanceOf(address(567)), 20);
+        assertEq(token.balanceOf(address(890)), 20);
     }
 
     function testFail_gulp_multiple() public {

@@ -47,9 +47,9 @@ contract RestrictedTokenFaucetTest is DSTest {
     address self;
 
     function setUp() public {
-        faucet = new RestrictedTokenFaucet(20 ether);
+        faucet = new RestrictedTokenFaucet(20);
         token = new DSToken("TEST");
-        token.mint(address(faucet), 1000000 ether);
+        token.mint(address(faucet), 1000000);
         user1 = address(new FaucetUser(token, faucet));
         user2 = address(new FaucetUser(token, faucet));
         self = address(this);
@@ -71,7 +71,7 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(faucet.wards(user1), 1);
         assertEq(token.balanceOf(user1), 0);
         FaucetUser(user1).doGulp();
-        assertEq(token.balanceOf(user1), 20 ether);
+        assertEq(token.balanceOf(user1), 20);
     }
 
     function testFail_rely_not_owner() public {
@@ -97,10 +97,10 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(token.balanceOf(address(567)), 0);
         assertEq(token.balanceOf(address(890)), 0);
         faucet.gulp(address(token), addrs);
-        assertEq(token.balanceOf(address(123)), 20 ether);
-        assertEq(token.balanceOf(address(234)), 20 ether);
-        assertEq(token.balanceOf(address(567)), 20 ether);
-        assertEq(token.balanceOf(address(890)), 20 ether);
+        assertEq(token.balanceOf(address(123)), 20);
+        assertEq(token.balanceOf(address(234)), 20);
+        assertEq(token.balanceOf(address(567)), 20);
+        assertEq(token.balanceOf(address(890)), 20);
     }
 
     function testFail_gulp_multiple() public {
@@ -118,12 +118,12 @@ contract RestrictedTokenFaucetTest is DSTest {
     function test_undo() public {
         assertEq(token.balanceOf(address(this)), 0);
         faucet.gulp(address(token));
-        assertEq(token.balanceOf(address(this)), 20 ether);
+        assertEq(token.balanceOf(address(this)), 20);
         assertTrue(faucet.done(address(this), address(token)));
         faucet.undo(address(this), address(token));
         assertTrue(!faucet.done(address(this), address(token)));
         faucet.gulp(address(token));
-        assertEq(token.balanceOf(address(this)), 40 ether);
+        assertEq(token.balanceOf(address(this)), 40);
     }
 
     function testFail_undo_not_owner() public {
@@ -135,7 +135,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     function test_shut() public {
         assertEq(token.balanceOf(address(this)), 0);
         faucet.shut(ERC20Like(address(token)));
-        assertEq(token.balanceOf(address(this)), 1000000 ether);
+        assertEq(token.balanceOf(address(this)), 1000000);
     }
 
     function testFail_shut_not_owner() public {
@@ -143,13 +143,13 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function test_setamt() public {
-        assertEq(faucet.amt(), 20 ether);
-        faucet.setamt(10 ether);
-        assertEq(faucet.amt(), 10 ether);
+        assertEq(faucet.amt(), 20);
+        faucet.setamt(10);
+        assertEq(faucet.amt(), 10);
     }
 
     function testFail_setamt_not_owner() public {
-        FaucetUser(user1).doSetAmt(10 ether);
+        FaucetUser(user1).doSetAmt(10);
     }
 
     function() external payable {}
