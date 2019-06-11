@@ -74,11 +74,11 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(token.balanceOf(user1), 20 ether);
     }
 
-    function testFail_rely_notOwner() public {
+    function testFail_rely_not_owner() public {
         FaucetUser(user1).doRely(address(123));
     }
 
-    function testFail_deny_notOwner() public {
+    function testFail_deny_not_owner() public {
         FaucetUser(user1).doDeny(address(this));
     }
 
@@ -110,7 +110,7 @@ contract RestrictedTokenFaucetTest is DSTest {
         faucet.gulp(address(token), addrs);
     }
 
-    function testFail_gulpTwice() public {
+    function testFail_gulp_twice() public {
         faucet.gulp(address(token));
         faucet.gulp(address(token));
     }
@@ -126,7 +126,7 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(token.balanceOf(address(this)), 40 ether);
     }
 
-    function testFail_undo_notOwner() public {
+    function testFail_undo_not_owner() public {
         faucet.gulp(address(token));
         assertTrue(faucet.done(address(this), address(token)));
         FaucetUser(address(user1)).doUndo(address(this));
@@ -138,7 +138,7 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(token.balanceOf(address(this)), 1000000 ether);
     }
 
-    function testFail_shut_notOwner() public {
+    function testFail_shut_not_owner() public {
         FaucetUser(user1).doShut();
     }
 
@@ -148,7 +148,7 @@ contract RestrictedTokenFaucetTest is DSTest {
         assertEq(faucet.amt(), 10 ether);
     }
 
-    function testFail_setamt_notOwner() public {
+    function testFail_setamt_not_owner() public {
         FaucetUser(user1).doSetAmt(10 ether);
     }
 

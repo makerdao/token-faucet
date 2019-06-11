@@ -48,7 +48,7 @@ contract TokenFaucetTest is DSTest {
         faucet.gulp(address(token), addrs);
     }
 
-    function testFail_gulpTwice() public {
+    function testFail_gulp_twice() public {
         faucet.gulp(address(token));
         faucet.gulp(address(token));
     }
