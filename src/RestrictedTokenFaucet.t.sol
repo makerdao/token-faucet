@@ -83,7 +83,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function test_gulp_multiple() public {
-        address payable[] memory addrs = new address payable[](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(123);
         faucet.rely(addrs[0]);
         addrs[1] = address(234);
@@ -104,7 +104,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function testFail_gulp_multiple() public {
-        address payable[] memory addrs = new address payable[](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(this); // already rely'ed
         addrs[1] = address(234); // not rely'ed
         faucet.gulp(address(token), addrs);

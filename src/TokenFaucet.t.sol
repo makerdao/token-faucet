@@ -26,7 +26,7 @@ contract TokenFaucetTest is DSTest {
         assertEq(token.balanceOf(address(234)), 0);
         assertEq(token.balanceOf(address(567)), 0);
         assertEq(token.balanceOf(address(890)), 0);
-        address payable[] memory addrs = new address payable[](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(123);
         addrs[1] = address(234);
         addrs[2] = address(567);
@@ -40,7 +40,7 @@ contract TokenFaucetTest is DSTest {
 
     function testFail_gulp_multiple() public {
         faucet.gulp(address(token));
-        address payable[] memory addrs = new address payable[](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(this);
         addrs[1] = address(234);
         addrs[2] = address(567);
