@@ -42,24 +42,24 @@ contract FaucetUser {
 contract RestrictedTokenFaucetTest is DSTest {
     RestrictedTokenFaucet faucet;
     DSToken token;
-    address user1;
-    address user2;
+    FaucetUser user1;
+    FaucetUser user2;
     address self;
 
     function setUp() public {
         faucet = new RestrictedTokenFaucet(20);
         token = new DSToken("TEST");
         token.mint(address(faucet), 1000000);
-        user1 = address(new FaucetUser(token, faucet));
-        user2 = address(new FaucetUser(token, faucet));
+        user1 = new FaucetUser(token, faucet);
+        user2 = new FaucetUser(token, faucet);
         self = address(this);
     }
 
     function testSetupPrecondition() public {
         assertEq(faucet.wards(self), 1);
         assertEq(faucet.owner(), self);
-        assertEq(faucet.wards(user1), 0);
-        assertEq(faucet.wards(user2), 0);
+        assertEq(faucet.wards(address(user1)), 0);
+        assertEq(faucet.wards(address(user2)), 0);
     }
 
     function testFail_gulp_no_auth() public {
@@ -67,19 +67,19 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function test_gulp_auth() public {
-        faucet.rely(user1);
-        assertEq(faucet.wards(user1), 1);
-        assertEq(token.balanceOf(user1), 0);
-        FaucetUser(user1).doGulp();
-        assertEq(token.balanceOf(user1), 20);
+        faucet.rely(address(user1));
+        assertEq(faucet.wards(address(user1)), 1);
+        assertEq(token.balanceOf(address(user1)), 0);
+        user1.doGulp();
+        assertEq(token.balanceOf(address(user1)), 20);
     }
 
     function testFail_rely_not_owner() public {
-        FaucetUser(user1).doRely(address(123));
+        user1.doRely(address(123));
     }
 
     function testFail_deny_not_owner() public {
-        FaucetUser(user1).doDeny(address(this));
+        user1.doDeny(address(this));
     }
 
     function test_gulp_multiple() public {
@@ -132,7 +132,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     function testFail_undo_not_owner() public {
         faucet.gulp(address(token));
         assertTrue(faucet.done(address(this), address(token)));
-        FaucetUser(address(user1)).doUndo(address(this));
+        user1.doUndo(address(this));
     }
 
     function test_shut() public {
@@ -142,7 +142,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function testFail_shut_not_owner() public {
-        FaucetUser(user1).doShut();
+        user1.doShut();
     }
 
     function test_setamt() public {
@@ -152,7 +152,7 @@ contract RestrictedTokenFaucetTest is DSTest {
     }
 
     function testFail_setamt_not_owner() public {
-        FaucetUser(user1).doSetAmt(10);
+        user1.doSetAmt(10);
     }
 
     function() external payable {}
