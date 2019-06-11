@@ -52,6 +52,4 @@ contract TokenFaucetTest is DSTest {
         faucet.gulp(address(token));
         faucet.gulp(address(token));
     }
-
-    function() external payable {}
 }

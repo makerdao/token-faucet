@@ -154,6 +154,4 @@ contract RestrictedTokenFaucetTest is DSTest {
     function testFail_setamt_not_owner() public {
         user1.doSetAmt(10);
     }
-
-    function() external payable {}
 }
