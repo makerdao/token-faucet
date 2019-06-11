@@ -117,11 +117,14 @@ contract RestrictedTokenFaucetTest is DSTest {
 
     function test_undo() public {
         assertEq(token.balanceOf(address(this)), 0);
+
         faucet.gulp(address(token));
         assertEq(token.balanceOf(address(this)), 20);
         assertTrue(faucet.done(address(this), address(token)));
+
         faucet.undo(address(this), address(token));
         assertTrue(!faucet.done(address(this), address(token)));
+
         faucet.gulp(address(token));
         assertEq(token.balanceOf(address(this)), 40);
     }
