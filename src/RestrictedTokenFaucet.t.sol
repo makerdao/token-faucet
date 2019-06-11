@@ -22,8 +22,8 @@ contract FaucetUser {
         return token.balanceOf(address(this));
     }
 
-    function doUnDone(address usr) public {
-        faucet.unDone(usr, address(token));
+    function doUndo(address usr) public {
+        faucet.undo(usr, address(token));
     }
 
     function doRely(address usr) public {
@@ -119,21 +119,21 @@ contract RestrictedTokenFaucetTest is DSTest {
         faucet.gulp(address(token));
     }
 
-    function test_unDone() public {
+    function test_undo() public {
         assertEq(token.balanceOf(address(this)), 0);
         faucet.gulp(address(token));
         assertEq(token.balanceOf(address(this)), 20 ether);
         assertTrue(faucet.done(address(this), address(token)));
-        faucet.unDone(address(this), address(token));
+        faucet.undo(address(this), address(token));
         assertTrue(!faucet.done(address(this), address(token)));
         faucet.gulp(address(token));
         assertEq(token.balanceOf(address(this)), 40 ether);
     }
 
-    function testFail_unDone_notOwner() public {
+    function testFail_undo_notOwner() public {
         faucet.gulp(address(token));
         assertTrue(faucet.done(address(this), address(token)));
-        FaucetUser(address(user1)).doUnDone(address(this));
+        FaucetUser(address(user1)).doUndo(address(this));
     }
 
     function test_shut() public {

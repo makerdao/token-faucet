@@ -49,7 +49,7 @@ contract RestrictedTokenFaucet {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function unDone(address usr, address gem) external isOwner {
+    function undo(address usr, address gem) external isOwner {
         done[usr][gem] = false;
     }
 
