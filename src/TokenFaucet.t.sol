@@ -10,15 +10,15 @@ contract TokenFaucetTest is DSTest {
     DSToken token;
 
     function setUp() public {
-        faucet = new TokenFaucet(20 ether);
+        faucet = new TokenFaucet(20);
         token = new DSToken("TEST");
-        token.mint(address(faucet), 1000000 ether);
+        token.mint(address(faucet), 1000000);
     }
 
     function test_gulp() public {
         assertEq(token.balanceOf(address(this)), 0);
         faucet.gulp(address(token));
-        assertEq(token.balanceOf(address(this)), 20 ether);
+        assertEq(token.balanceOf(address(this)), 20);
     }
 
     function test_gulp_multiple() public {
@@ -26,21 +26,21 @@ contract TokenFaucetTest is DSTest {
         assertEq(token.balanceOf(address(234)), 0);
         assertEq(token.balanceOf(address(567)), 0);
         assertEq(token.balanceOf(address(890)), 0);
-        address payable [] memory addrs = new address payable [](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(123);
         addrs[1] = address(234);
         addrs[2] = address(567);
         addrs[3] = address(890);
         faucet.gulp(address(token), addrs);
-        assertEq(token.balanceOf(address(123)), 20 ether);
-        assertEq(token.balanceOf(address(234)), 20 ether);
-        assertEq(token.balanceOf(address(567)), 20 ether);
-        assertEq(token.balanceOf(address(890)), 20 ether);
+        assertEq(token.balanceOf(address(123)), 20);
+        assertEq(token.balanceOf(address(234)), 20);
+        assertEq(token.balanceOf(address(567)), 20);
+        assertEq(token.balanceOf(address(890)), 20);
     }
 
     function testFail_gulp_multiple() public {
         faucet.gulp(address(token));
-        address payable [] memory addrs = new address payable [](4);
+        address[] memory addrs = new address[](4);
         addrs[0] = address(this);
         addrs[1] = address(234);
         addrs[2] = address(567);
@@ -48,10 +48,8 @@ contract TokenFaucetTest is DSTest {
         faucet.gulp(address(token), addrs);
     }
 
-    function testFail_gulpTwice() public {
+    function testFail_gulp_twice() public {
         faucet.gulp(address(token));
         faucet.gulp(address(token));
     }
-
-    function() external payable {}
 }
