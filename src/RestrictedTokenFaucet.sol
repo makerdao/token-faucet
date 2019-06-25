@@ -19,8 +19,6 @@ contract RestrictedTokenFaucet {
     function hope(address guy) public auth { list[guy] = 1; }
     function nope(address guy) public auth { list[guy] = 0; }
 
-    address public owner;
-
     uint256 public amt;
     mapping (address => mapping (address => bool)) public done;
 
