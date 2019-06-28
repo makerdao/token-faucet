@@ -57,11 +57,11 @@ contract RestrictedTokenFaucet is DSNote {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function undo(address usr, address gem) external auth {
+    function undo(address usr, address gem) external auth note {
         done[usr][gem] = false;
     }
 
-    function setamt(uint256 amt_) external auth {
+    function setamt(uint256 amt_) external auth note {
         amt = amt_;
     }
 }
