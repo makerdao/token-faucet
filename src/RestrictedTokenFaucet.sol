@@ -1,23 +1,25 @@
 pragma solidity >=0.5.0;
 
+import "./lib.sol";
+
 interface ERC20Like {
     function balanceOf(address) external view returns (uint256);
     function transfer(address,uint256) external; // return bool?
 }
 
-contract RestrictedTokenFaucet {
+contract RestrictedTokenFaucet is DSNote {
     // --- Auth ---
     mapping (address => uint) public wards;
-    function rely(address guy) public auth { wards[guy] = 1; }
-    function deny(address guy) public auth { wards[guy] = 0; }
+    function rely(address guy) public auth note { wards[guy] = 1; }
+    function deny(address guy) public auth note { wards[guy] = 0; }
     modifier auth {
         require(wards[msg.sender] == 1, "token-faucet/no-auth");
         _;
     }
     // --- Gulp Whitelist ---
     mapping (address => uint) public list;
-    function hope(address guy) public auth { list[guy] = 1; }
-    function nope(address guy) public auth { list[guy] = 0; }
+    function hope(address guy) public auth note { list[guy] = 1; }
+    function nope(address guy) public auth note { list[guy] = 0; }
 
     uint256 public amt;
     mapping (address => mapping (address => bool)) public done;
@@ -55,11 +57,11 @@ contract RestrictedTokenFaucet {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function undo(address usr, address gem) external auth {
+    function undo(address usr, address gem) external auth note {
         done[usr][gem] = false;
     }
 
-    function setamt(uint256 amt_) external auth {
+    function setamt(uint256 amt_) external auth note {
         amt = amt_;
     }
 }
