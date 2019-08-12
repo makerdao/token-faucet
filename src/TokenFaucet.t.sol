@@ -1,9 +1,9 @@
 pragma solidity ^0.5.4;
 
 import "ds-test/test.sol";
-import "ds-token/token.sol";
+import {DSToken} from "ds-token/token.sol";
 
-import "./TokenFaucet.sol";
+import {TokenFaucet} from "./TokenFaucet.sol";
 
 contract TokenFaucetTest is DSTest {
     TokenFaucet faucet;

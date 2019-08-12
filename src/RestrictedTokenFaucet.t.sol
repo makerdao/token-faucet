@@ -1,9 +1,9 @@
 pragma solidity ^0.5.4;
 
 import "ds-test/test.sol";
-import "ds-token/token.sol";
+import {DSToken} from "ds-token/token.sol";
 
-import "./RestrictedTokenFaucet.sol";
+import {RestrictedTokenFaucet, ERC20Like} from "./RestrictedTokenFaucet.sol";
 
 contract FaucetUser {
     DSToken token;
