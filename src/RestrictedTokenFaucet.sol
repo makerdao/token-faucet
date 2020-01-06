@@ -9,7 +9,7 @@ interface ERC20Like {
 
 contract RestrictedTokenFaucet is DSNote {
     // --- Auth ---
-    mapping (address => uint) public wards;
+    mapping (address => uint256) public wards;
     function rely(address guy) public auth note { wards[guy] = 1; }
     function deny(address guy) public auth note { wards[guy] = 0; }
     modifier auth {
@@ -17,39 +17,38 @@ contract RestrictedTokenFaucet is DSNote {
         _;
     }
     // --- Gulp Whitelist ---
-    mapping (address => uint) public list;
+    mapping (address => uint256) public list;
     function hope(address guy) public auth note { list[guy] = 1; }
     function nope(address guy) public auth note { list[guy] = 0; }
 
-    uint256 public amt;
+    mapping (address => uint256) public amt;
     mapping (address => mapping (address => bool)) public done;
 
-    constructor (uint256 amt_) public {
+    constructor () public {
         wards[msg.sender] = 1;
         list[msg.sender] = 1;
-        amt = amt_;
     }
 
-    function mul(uint x, uint y) internal pure returns (uint z) {
+    function mul(uint256 x, uint256 y) internal pure returns (uint256 z) {
         require(y == 0 || (z = x * y) / y == x, "token-faucet/mul-overflow");
     }
 
     function gulp(address gem) external  {
         require(list[address(0)] == 1 || list[msg.sender] == 1, "token-faucet/no-whitelist");
         require(!done[msg.sender][gem], "token-faucet/already-used_faucet");
-        require(ERC20Like(gem).balanceOf(address(this)) >= amt, "token-faucet/not-enough-balance");
+        require(ERC20Like(gem).balanceOf(address(this)) >= amt[gem], "token-faucet/not-enough-balance");
         done[msg.sender][gem] = true;
-        ERC20Like(gem).transfer(msg.sender, amt);
+        ERC20Like(gem).transfer(msg.sender, amt[gem]);
     }
 
     function gulp(address gem, address[] calldata addrs) external {
-        require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt, addrs.length), "token-faucet/not-enough-balance");
+        require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt[gem], addrs.length), "token-faucet/not-enough-balance");
 
-        for (uint i = 0; i < addrs.length; i++) {
+        for (uint256 i = 0; i < addrs.length; i++) {
             require(list[address(0)] == 1 || list[addrs[i]] == 1, "token-faucet/no-whitelist");
             require(!done[addrs[i]][address(gem)], "token-faucet/already-used-faucet");
             done[addrs[i]][address(gem)] = true;
-            ERC20Like(gem).transfer(addrs[i], amt);
+            ERC20Like(gem).transfer(addrs[i], amt[gem]);
         }
     }
 
@@ -61,7 +60,7 @@ contract RestrictedTokenFaucet is DSNote {
         done[usr][gem] = false;
     }
 
-    function setamt(uint256 amt_) external auth note {
-        amt = amt_;
+    function setAmt(address gem, uint256 amt_) external auth note {
+        amt[gem] = amt_;
     }
 }
