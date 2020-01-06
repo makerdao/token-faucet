@@ -10,9 +10,10 @@ contract TokenFaucetTest is DSTest {
     DSToken token;
 
     function setUp() public {
-        faucet = new TokenFaucet(20);
+        faucet = new TokenFaucet();
         token = new DSToken("TEST");
         token.mint(address(faucet), 1000000);
+        faucet.setAmt(address(token), 20);
     }
 
     function test_gulp() public {

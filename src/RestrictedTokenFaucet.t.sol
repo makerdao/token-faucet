@@ -34,8 +34,8 @@ contract FaucetUser {
         faucet.shut(ERC20Like(address(this)));
     }
 
-    function doSetAmt(uint amt) public {
-        faucet.setamt(amt);
+    function doSetAmt(address tok, uint amt) public {
+        faucet.setAmt(tok, amt);
     }
 }
 
@@ -47,9 +47,10 @@ contract RestrictedTokenFaucetTest is DSTest {
     address self;
 
     function setUp() public {
-        faucet = new RestrictedTokenFaucet(20);
+        faucet = new RestrictedTokenFaucet();
         token = new DSToken("TEST");
         token.mint(address(faucet), 1000000);
+        faucet.setAmt(address(token), 20);
         user1 = new FaucetUser(token, faucet);
         user2 = new FaucetUser(token, faucet);
         self = address(this);
@@ -154,13 +155,13 @@ contract RestrictedTokenFaucetTest is DSTest {
         user1.doShut();
     }
 
-    function test_setamt() public {
-        assertEq(faucet.amt(), 20);
-        faucet.setamt(10);
-        assertEq(faucet.amt(), 10);
+    function test_setAmt() public {
+        assertEq(faucet.amt(address(token)), 20);
+        faucet.setAmt(address(token), 10);
+        assertEq(faucet.amt(address(token)), 10);
     }
 
-    function testFail_setamt_not_owner() public {
-        user1.doSetAmt(10);
+    function testFail_setAmt_not_owner() public {
+        user1.doSetAmt(address(token), 10);
     }
 }

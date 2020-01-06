@@ -9,37 +9,36 @@ interface ERC20Like {
 
 contract TokenFaucet is DSNote {
     // --- Auth ---
-    mapping (address => uint) public wards;
+    mapping (address => uint256) public wards;
     function rely(address guy) public auth note { wards[guy] = 1; }
     function deny(address guy) public auth note { wards[guy] = 0; }
     modifier auth { require(wards[msg.sender] == 1); _; }
 
-    uint256 public amt;
+    mapping (address => uint256) public amt;
     mapping (address => mapping (address => bool)) public done;
 
-    constructor (uint256 amt_) public {
+    constructor () public {
         wards[msg.sender] = 1;
-        amt = amt_;
     }
 
-    function mul(uint x, uint y) internal pure returns (uint z) {
+    function mul(uint256 x, uint256 y) internal pure returns (uint256 z) {
         require(y == 0 || (z = x * y) / y == x);
     }
 
     function gulp(address gem) external {
         require(!done[msg.sender][address(gem)], "token-faucet: already used faucet");
-        require(ERC20Like(gem).balanceOf(address(this)) >= amt, "token-faucet: not enough balance");
+        require(ERC20Like(gem).balanceOf(address(this)) >= amt[gem], "token-faucet: not enough balance");
         done[msg.sender][address(gem)] = true;
-        ERC20Like(gem).transfer(msg.sender, amt);
+        ERC20Like(gem).transfer(msg.sender, amt[gem]);
     }
 
     function gulp(address gem, address[] calldata addrs) external {
-        require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt, addrs.length), "token-faucet: not enough balance");
+        require(ERC20Like(gem).balanceOf(address(this)) >= mul(amt[gem], addrs.length), "token-faucet: not enough balance");
 
-        for (uint i = 0; i < addrs.length; i++) {
+        for (uint256 i = 0; i < addrs.length; i++) {
             require(!done[addrs[i]][address(gem)], "token-faucet: already used faucet");
             done[addrs[i]][address(gem)] = true;
-            ERC20Like(gem).transfer(addrs[i], amt);
+            ERC20Like(gem).transfer(addrs[i], amt[gem]);
         }
     }
 
@@ -47,7 +46,7 @@ contract TokenFaucet is DSNote {
         gem.transfer(msg.sender, gem.balanceOf(address(this)));
     }
 
-    function setamt(uint256 amt_) external auth note {
-        amt = amt_;
+    function setAmt(address gem, uint256 amt_) external auth note {
+        amt[gem] = amt_;
     }
 }
